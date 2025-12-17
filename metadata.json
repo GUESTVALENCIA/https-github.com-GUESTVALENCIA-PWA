@@ -1,0 +1,9 @@
+{
+  "name": "Copy of Copy of Copy of Copy of Copy of Sandra IA - Galaxy Hospitality",
+  "description": "Next-gen PWA for property management and guest assistance using Gemini Live API and Veo.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}
