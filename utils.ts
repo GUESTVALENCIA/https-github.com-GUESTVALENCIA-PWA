@@ -1,4 +1,5 @@
-import { Blob } from '@google/genai';
+
+import { Blob as GenAIBlob } from '@google/genai';
 
 export function base64ToUint8Array(base64: string): Uint8Array {
   const binaryString = atob(base64);
@@ -39,7 +40,7 @@ export async function decodeAudioData(
   return buffer;
 }
 
-export function createPcmBlob(data: Float32Array): Blob {
+export function createPcmBlob(data: Float32Array): GenAIBlob {
   const l = data.length;
   const int16 = new Int16Array(l);
   for (let i = 0; i < l; i++) {
@@ -105,6 +106,32 @@ export function playPickupSound() {
   gain.connect(ctx.destination);
   osc.start();
   osc.stop(ctx.currentTime + 0.1);
+}
+
+// 3. Hangup Sound (Three rapid descending tones + silence)
+export function playHangupSound() {
+  const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.type = 'sine';
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+
+  const now = ctx.currentTime;
+  
+  // Tone 1
+  osc.frequency.setValueAtTime(400, now);
+  gain.gain.setValueAtTime(0.2, now);
+  gain.gain.setValueAtTime(0, now + 0.1);
+
+  // Tone 2
+  osc.frequency.setValueAtTime(300, now + 0.15);
+  gain.gain.setValueAtTime(0.2, now + 0.15);
+  gain.gain.setValueAtTime(0, now + 0.25);
+  
+  osc.start();
+  osc.stop(now + 0.3);
 }
 
 // --- MEDIA STORAGE (IndexedDB Wrapper for Persistence) ---
